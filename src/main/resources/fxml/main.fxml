@@ -31,7 +31,16 @@
 
     <center>
         <SplitPane fx:id="split1">
-            <CategoryTreeView fx:id="tvCategories" maxWidth="300"/>
+            <VBox maxWidth="300">
+                <HBox spacing="5" alignment="BASELINE_LEFT">
+                    <padding>
+                        <Insets topRightBottomLeft="5"/>
+                    </padding>
+                    <TextField fx:id="txtSearchKeyword" HBox.hgrow="ALWAYS" disable="true"/>
+                    <Button fx:id="btnClearKeyword" text="清空" disable="true"/>
+                </HBox>
+                <CategoryTreeView fx:id="tvCategories" VBox.vgrow="ALWAYS" disable="true"/>
+            </VBox>
             <SplitPane orientation="VERTICAL" fx:id="split2">
                 <VBox maxHeight="400">
                     <HBox spacing="10" alignment="BASELINE_LEFT">

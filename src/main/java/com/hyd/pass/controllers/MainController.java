@@ -64,6 +64,10 @@ public class MainController extends BaseController {
 
     public CheckMenuItem mnuAutoOpen;
 
+    public TextField txtSearchKeyword;
+
+    public Button btnClearKeyword;
+
     public void initialize() {
         this.split1.setDividerPositions(0.2);
         this.split2.setDividerPositions(0.4);
@@ -286,6 +290,9 @@ public class MainController extends BaseController {
     private void loadPasswordLib(PasswordLib passwordLib) {
         UserConfig.setString("latest_file", passwordLib.filePath());
         loadCategories(passwordLib);
+        this.btnClearKeyword.setDisable(false);
+        this.txtSearchKeyword.setDisable(false);
+        this.tvCategories.setDisable(false);
         this.tvCategories.getRoot().setExpanded(true);
         this.tvCategories.getSelectionModel().select(this.tvCategories.getRoot());
         AppPrimaryStage.getPrimaryStage().setTitle(App.APP_NAME + " - " + passwordLib.filePath());
