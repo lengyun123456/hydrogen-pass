@@ -35,80 +35,13 @@ public class MainController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(MainController.class);
 
-    public SplitPane split1;
-
-    public SplitPane split2;
-
-    public TreeView<Category> tvCategories;
-
-    public TableView<Entry> tblEntries;
-
-    public TableView<Authentication> tblAuthentications;
-
-    public Button btnNewEntry;
-
-    public Button btnNewLogin;
-
-    public TextArea txtNote;
-
-    public TabPane tpEntryInfo;
-
-    public TableColumn<Entry, String> colEntryName;
-
-    public TableColumn<Entry, String> colEntryLocation;
-
-    public TableColumn<Entry, String> colEntryComment;
-
-    public TableColumn<Authentication, String> colAuthUsername;
-
-    public TableColumn<Authentication, String> colAuthPassword;
-
     public CheckMenuItem mnuAutoSave;
 
     public CheckMenuItem mnuAutoOpen;
 
     public CheckMenuItem mnuNoteWrap;
 
-    public MenuItem mnuPasteAuthentication;
-
     public void initialize() {
-        this.split1.setDividerPositions(0.2);
-        this.split2.setDividerPositions(0.4);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
-        ObservableValue<TreeItem<Category>> selectedCategoryItem =
-                this.tvCategories.getSelectionModel().selectedItemProperty();
-
-        selectedCategoryItem.addListener(this::selectedCategoryChanged);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
-        setColumnValueFactory(colEntryName, Entry::getName);
-        setColumnValueFactory(colEntryLocation, Entry::getLocation);
-        setColumnValueFactory(colEntryComment, Entry::getComment);
-
-        this.tblEntries.setRowFactory(tv -> new EntryTableRow());
-        this.tblEntries.getSortOrder().add(colEntryName);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
-        ReadOnlyObjectProperty<Entry> selectedEntry =
-                this.tblEntries.getSelectionModel().selectedItemProperty();
-
-        selectedEntry.addListener(this::selectedEntryChanged);
-
-        this.txtNote.textProperty().addListener(this::noteTextChanged);
-
-        ////////////////////////////////////////////////////////////////////////////////
-
-        setColumnValueFactory(colAuthUsername, Authentication::getUsername);
-        setColumnValueFactory(colAuthPassword, Authentication::getPassword);
-
-        this.tblAuthentications.setRowFactory(tv -> new AuthenticationTableRow());
-        this.tblAuthentications.getSortOrder().add(colAuthUsername);
-
-        ////////////////////////////////////////////////////////////////////////////////
 
         AppPrimaryStage.getPrimaryStage().setOnCloseRequest(this::beforeClose);
         AppPrimaryStage.getPrimaryStage().addEventFilter(KeyEvent.KEY_PRESSED, this::keyEventHandler);
@@ -135,23 +68,24 @@ public class MainController extends BaseController {
     }
 
     private void keyEventHandler(KeyEvent event) {
-
-        if (this.tblAuthentications.isFocused()) {
-            if (event.isControlDown() && event.getCode() == KeyCode.X) {
-                withCurrentAuthentication(auth -> ClipboardHelper.putString(auth.getUsername()));
-                event.consume();
-            } else if (event.isControlDown() && event.getCode() == KeyCode.C) {
-                withCurrentAuthentication(auth -> ClipboardHelper.putString(auth.getPassword()));
-                event.consume();
-            }
+        if (event.isControlDown() && event.getCode() == KeyCode.X) {
+            withCurrentAuthentication(auth -> ClipboardHelper.putString(auth.getUsername()));
+            event.consume();
+        } else if (event.isControlDown() && event.getCode() == KeyCode.C) {
+            withCurrentAuthentication(auth -> ClipboardHelper.putString(auth.getPassword()));
+            event.consume();
         }
     }
 
     private void withCurrentAuthentication(Consumer<Authentication> consumer) {
-        Authentication item = this.tblAuthentications.getSelectionModel().getSelectedItem();
+        Authentication item = getCurrentAuthentication();
         if (item != null) {
             consumer.accept(item);
         }
+    }
+
+    private Authentication getCurrentAuthentication() {
+        return null;
     }
 
     @SuppressWarnings("unused")
@@ -164,33 +98,12 @@ public class MainController extends BaseController {
     }
 
     @SuppressWarnings("unused")
-    private void selectedCategoryChanged(
-            ObservableValue<? extends TreeItem<Category>> ob,
-            TreeItem<Category> _old,
-            TreeItem<Category> selected) {
-
-        App.setCurrentCategory(selected == null ? null : selected.getValue());
-
-        this.btnNewEntry.setDisable(selected == null);
-        this.tblEntries.setDisable(selected == null);
-
-        refreshEntryList();
-    }
-
-    @SuppressWarnings("unused")
     private void selectedEntryChanged(
             ObservableValue<? extends Entry> ob,
             Entry _old,
             Entry selected
     ) {
         App.setCurrentEntry(selected);
-
-        this.btnNewLogin.setDisable(selected == null);
-        this.tblAuthentications.setDisable(selected == null);
-        this.tpEntryInfo.setDisable(selected == null);
-        this.txtNote.setEditable(selected != null);
-        this.txtNote.setText(selected == null ? "" : selected.getNote());
-
         refreshAuthenticationList();
     }
 
@@ -297,15 +210,12 @@ public class MainController extends BaseController {
     private void loadPasswordLib(PasswordLib passwordLib) {
         UserConfig.setString("latest_file", passwordLib.filePath());
         loadCategories(passwordLib);
-        this.tvCategories.getRoot().setExpanded(true);
-        this.tvCategories.getSelectionModel().select(this.tvCategories.getRoot());
         AppPrimaryStage.getPrimaryStage().setTitle(App.APP_NAME + " - " + passwordLib.filePath());
     }
 
     private void loadCategories(PasswordLib passwordLib) {
         Category rootCategory = passwordLib.getRootCategory();
         TreeItem<Category> root = loadCategory(rootCategory);
-        this.tvCategories.setRoot(root);
     }
 
     private TreeItem<Category> loadCategory(Category category) {
@@ -316,34 +226,11 @@ public class MainController extends BaseController {
         return treeItem;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    private OrElse ifCategorySelectedThen(Consumer<Category> consumer) {
-        TreeItem<Category> item = this.tvCategories.getSelectionModel().getSelectedItem();
-        if (item == null || item.getValue() == null) {
-            return OrElse.negative();
-        }
-
-        return OrElse.positive(() -> consumer.accept(item.getValue()));
-    }
-
     private void refreshEntryList() {
-        Category currentCategory = App.getCurrentCategory();
-        if (currentCategory != null) {
-            tblEntries.getItems().setAll(currentCategory.getEntries());
-            tblEntries.sort();
-        } else {
-            tblEntries.getItems().clear();
-        }
     }
 
     private void refreshAuthenticationList() {
         Entry currentEntry = App.getCurrentEntry();
-        if (currentEntry != null) {
-            this.tblAuthentications.getItems().setAll(currentEntry.getAuthentications());
-            this.tblAuthentications.sort();
-        } else {
-            this.tblAuthentications.getItems().clear();
-        }
     }
 
     public void saveClicked() {
@@ -359,7 +246,6 @@ public class MainController extends BaseController {
 
         if (buttonType == ButtonType.OK) {
             Entry entry = dialog.getEntry();
-            ifCategorySelectedThen(category -> category.addEntry(entry));
             refreshEntryList();
             App.setPasswordLibChanged();
         }
@@ -383,7 +269,7 @@ public class MainController extends BaseController {
     }
 
     public void noteWrapToggleClicked() {
-        txtNote.setWrapText(mnuNoteWrap.isSelected());
+        // txtNote.setWrapText(mnuNoteWrap.isSelected());
         UserConfig.setString("note_wrap_text", String.valueOf(mnuNoteWrap.isSelected()));
     }
 
@@ -414,9 +300,5 @@ public class MainController extends BaseController {
                 refreshAuthenticationList();
             }
         }
-    }
-
-    public void onAuthTableContextMenuShown() {
-        mnuPasteAuthentication.setDisable(getApplicationClipboard(CLIP_KEY) == null);
     }
 }

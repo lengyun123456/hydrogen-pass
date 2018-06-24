@@ -10,3 +10,21 @@
 .table-view, .text-field, .text-area {
     -fx-font-family: Consolas, monospace;
 }
+
+.text-field {
+    -fx-border-radius: 0;
+    -fx-border-color: #5199e2;
+    -fx-background-color: white;
+}
+
+.button {
+    -fx-background-color: #1d5fb5;
+    -fx-padding: 0.5em 1.2em;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-text-fill: #FFF;
+}
+
+.button.small {
+    -fx-padding: 0.3em 0.5em;
+}

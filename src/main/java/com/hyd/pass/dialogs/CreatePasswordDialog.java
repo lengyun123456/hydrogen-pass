@@ -39,6 +39,7 @@ public class CreatePasswordDialog extends BasicDialog {
         new DialogBuilder()
                 .title("创建密码库")
                 .logo(AppLogo.getLogo())
+                .css("/css/style.css")
                 .body("/fxml/create-password-lib.fxml", this)
                 .buttons(ButtonType.OK, ButtonType.CANCEL)
                 .onOkButtonClicked(this::onOkButtonClicked)
@@ -48,7 +49,7 @@ public class CreatePasswordDialog extends BasicDialog {
     private void onOkButtonClicked(ActionEvent event) {
 
         if (StringUtils.isBlank(savePath.getText())) {
-            AlertDialog.error("存储文件不能为空");
+            AlertDialog.error("保存位置不能为空");
             event.consume();
             return;
         }

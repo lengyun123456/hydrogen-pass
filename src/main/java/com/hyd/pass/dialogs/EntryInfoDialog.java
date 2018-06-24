@@ -33,6 +33,7 @@ public class EntryInfoDialog extends BasicDialog {
                 .title("入口信息")
                 .logo(AppLogo.getLogo())
                 .body("/fxml/entry-info-dialog.fxml", this)
+                .css("/css/style.css")
                 .buttons(ButtonType.OK, ButtonType.CANCEL)
                 .onOkButtonClicked(this::onOkButtonClicked)
                 .onStageShown(event -> txtEntryName.requestFocus())

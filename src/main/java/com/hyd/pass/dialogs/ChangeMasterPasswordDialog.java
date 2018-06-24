@@ -34,6 +34,7 @@ public class ChangeMasterPasswordDialog extends BasicDialog {
                 .title("修改主密码")
                 .logo(AppLogo.getLogo())
                 .body("/fxml/change-master-password.fxml", this)
+                .css("/css/style.css")
                 .buttons(ButtonType.OK, ButtonType.CANCEL)
                 .onOkButtonClicked(this::onOkButtonClicked)
                 .onStageShown(event -> txtOldPassword.requestFocus())

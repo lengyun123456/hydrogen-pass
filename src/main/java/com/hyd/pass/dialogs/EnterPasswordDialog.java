@@ -30,6 +30,7 @@ public class EnterPasswordDialog extends BasicDialog {
                 .title("输入“" + fileName + "”的主密码")
                 .logo(AppLogo.getLogo())
                 .body("/fxml/enter-password.fxml", this)
+                .css("/css/style.css")
                 .buttons(ButtonType.OK, ButtonType.CANCEL)
                 .onOkButtonClicked(this::onOkButtonClicked)
                 .onStageShown(event -> mainPassword.requestFocus())

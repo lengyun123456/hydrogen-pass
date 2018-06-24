@@ -86,6 +86,7 @@ public class AuthenticationInfoDialog extends BasicDialog {
                 .title("登录信息")
                 .logo(AppLogo.getLogo())
                 .body("/fxml/authentication-info-dialog.fxml", this)
+                .css("/css/style.css")
                 .buttons(ButtonType.OK, ButtonType.CANCEL)
                 .onOkButtonClicked(this::onOkButtonClicked)
                 .onStageShown(event -> txtUsername.requestFocus())
