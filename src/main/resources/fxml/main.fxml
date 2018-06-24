@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.hyd.pass.fx.CategoryTreeView?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
@@ -32,8 +30,9 @@
 
     <center>
         <HBox>
-            <VBox prefWidth="150" style="-fx-background-color: #1d5fb5">
-                <Label text="Tag 列表"/>
+            <VBox prefWidth="150" style="-fx-background-color: #1d5fb5;-fx-padding: 0.6em" spacing="10">
+                <TextField promptText="标签" fx:id="txtTagName"/>
+                <FlowPane fx:id="fpTags" VBox.vgrow="ALWAYS"/>
             </VBox>
             <VBox prefWidth="150" style="-fx-background-color: #d7ba2a">
                 <Label text="Entry 列表"/>

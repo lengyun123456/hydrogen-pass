@@ -28,3 +28,8 @@
 .button.small {
     -fx-padding: 0.3em 0.5em;
 }
+
+.label.tag {
+    -fx-border-color: #5199e2;
+    -fx-text-fill: #FFF;
+}

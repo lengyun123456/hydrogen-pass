@@ -18,10 +18,12 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.hyd.fx.cells.TableViewHelper.setColumnValueFactory;
@@ -41,6 +43,10 @@ public class MainController extends BaseController {
 
     public CheckMenuItem mnuNoteWrap;
 
+    public FlowPane fpTags;
+
+    public TextField txtTagName;
+
     public void initialize() {
 
         AppPrimaryStage.getPrimaryStage().setOnCloseRequest(this::beforeClose);
@@ -50,9 +56,31 @@ public class MainController extends BaseController {
         mnuAutoOpen.setSelected(UserConfig.getBoolean("auto_open_on_start", false));
         mnuNoteWrap.setSelected(UserConfig.getBoolean("note_wrap_text", false));
 
+        txtTagName.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String tagName = txtTagName.getText();
+                if (tagName.trim().length() > 0) {
+                    Label label = new Label(tagName);
+                    label.getStyleClass().add("tag");
+                    this.fpTags.getChildren().add(label);
+                }
+            }
+        });
+
         ///////////////////////////////////////////////
 
         tryAutoOpenRecentFile();
+    }
+
+    private void loadTags(PasswordLib passwordLib) {
+        List<Tag> tags = passwordLib.getTags();
+        if (tags != null) {
+            tags.forEach(tag -> {
+                Label label = new Label(tag.getName());
+                label.getStyleClass().add("tag");
+                this.fpTags.getChildren().add(label);
+            });
+        }
     }
 
     private void tryAutoOpenRecentFile() {
@@ -210,6 +238,7 @@ public class MainController extends BaseController {
     private void loadPasswordLib(PasswordLib passwordLib) {
         UserConfig.setString("latest_file", passwordLib.filePath());
         loadCategories(passwordLib);
+        loadTags(passwordLib);
         AppPrimaryStage.getPrimaryStage().setTitle(App.APP_NAME + " - " + passwordLib.filePath());
     }
 
