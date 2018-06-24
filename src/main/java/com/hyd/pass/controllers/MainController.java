@@ -8,18 +8,12 @@ import com.hyd.pass.App;
 import com.hyd.pass.Logger;
 import com.hyd.pass.conf.UserConfig;
 import com.hyd.pass.dialogs.*;
-import com.hyd.pass.fx.AuthenticationTableRow;
-import com.hyd.pass.fx.EntryTableRow;
-import com.hyd.pass.fx.TagListView;
+import com.hyd.pass.fx.EntryListView;
 import com.hyd.pass.model.*;
-import com.hyd.pass.utils.OrElse;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +22,6 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.hyd.fx.cells.TableViewHelper.setColumnValueFactory;
 import static com.hyd.fx.system.ClipboardHelper.getApplicationClipboard;
 import static com.hyd.pass.fx.AuthenticationTableRow.CLIP_KEY;
 
@@ -48,6 +41,8 @@ public class MainController extends BaseController {
     public VBox tagsPane = new VBox();
 
     public TextField txtTagName;
+
+    public EntryListView lvEntries;
 
     public void initialize() {
 
@@ -237,7 +232,12 @@ public class MainController extends BaseController {
         UserConfig.setString("latest_file", passwordLib.filePath());
         loadCategories(passwordLib);
         loadTags(passwordLib);
+        loadEntries(passwordLib);
         AppPrimaryStage.getPrimaryStage().setTitle(App.APP_NAME + " - " + passwordLib.filePath());
+    }
+
+    private void loadEntries(PasswordLib passwordLib) {
+        this.lvEntries.getItems().setAll(passwordLib.getEntries());
     }
 
     private void loadCategories(PasswordLib passwordLib) {

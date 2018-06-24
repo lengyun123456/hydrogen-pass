@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.hyd.pass.fx.EntryListView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.hyd.pass.fx.TagListView?>
 <BorderPane xmlns="http://javafx.com/javafx"
             stylesheets="@/css/style.css"
             xmlns:fx="http://javafx.com/fxml"
@@ -32,14 +33,17 @@
     <center>
         <HBox>
             <VBox prefWidth="150" style="-fx-background-color: #1d5fb5;-fx-padding: 0.6em" spacing="10">
-                <TextField promptText="标签" fx:id="txtTagName"
-                           style="-fx-border-width: 0"/>
+                <TextField promptText="标签" fx:id="txtTagName" style="-fx-border-width: 0"/>
                 <ScrollPane VBox.vgrow="ALWAYS" styleClass="tag-scroll-pane">
                     <VBox fx:id="tagsPane" spacing="10"/>
                 </ScrollPane>
             </VBox>
-            <VBox prefWidth="150" style="-fx-background-color: #d7ba2a">
-                <Label text="Entry 列表"/>
+            <VBox prefWidth="150" style="-fx-background-color: #d7ba2a" spacing="10">
+                <padding>
+                    <Insets topRightBottomLeft="5"/>
+                </padding>
+                <Button text="添加"/>
+                <EntryListView fx:id="lvEntries" VBox.vgrow="ALWAYS" styleClass="entry-list-view"/>
             </VBox>
             <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #97ceff">
                 <Label text="账户信息和笔记"/>

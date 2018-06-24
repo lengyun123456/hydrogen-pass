@@ -71,3 +71,25 @@
     -fx-background-radius: 0.0em;
     -fx-padding: 0.0 10.0 0.0 0.0;
 }
+
+.list-view.entry-list-view {
+    -fx-border-color: transparent;
+}
+
+.list-view.entry-list-view, .list-view.entry-list-view .list-cell {
+    -fx-background-color: transparent;
+}
+
+.list-view.entry-list-view .list-cell {
+    -fx-padding: 2 0;
+}
+
+.entry-card {
+    -fx-background-color: #cca341;
+    -fx-padding: 5;
+    -fx-background-radius: 3;
+}
+
+.entry-card .entry-name {
+    -fx-font-weight: bold;
+}
