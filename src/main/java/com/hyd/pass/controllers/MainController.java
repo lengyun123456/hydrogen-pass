@@ -10,6 +10,7 @@ import com.hyd.pass.conf.UserConfig;
 import com.hyd.pass.dialogs.*;
 import com.hyd.pass.fx.AuthenticationTableRow;
 import com.hyd.pass.fx.EntryTableRow;
+import com.hyd.pass.fx.TagListView;
 import com.hyd.pass.model.*;
 import com.hyd.pass.utils.OrElse;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -19,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,7 +45,7 @@ public class MainController extends BaseController {
 
     public CheckMenuItem mnuNoteWrap;
 
-    public FlowPane fpTags;
+    public VBox tagsPane = new VBox();
 
     public TextField txtTagName;
 
@@ -62,7 +64,8 @@ public class MainController extends BaseController {
                 if (tagName.trim().length() > 0) {
                     Label label = new Label(tagName);
                     label.getStyleClass().add("tag");
-                    this.fpTags.getChildren().add(label);
+                    tagsPane.getChildren().add(label);
+                    txtTagName.selectAll();
                 }
             }
         });
@@ -75,11 +78,6 @@ public class MainController extends BaseController {
     private void loadTags(PasswordLib passwordLib) {
         List<Tag> tags = passwordLib.getTags();
         if (tags != null) {
-            tags.forEach(tag -> {
-                Label label = new Label(tag.getName());
-                label.getStyleClass().add("tag");
-                this.fpTags.getChildren().add(label);
-            });
         }
     }
 
