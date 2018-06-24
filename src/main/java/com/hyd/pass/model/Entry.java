@@ -1,11 +1,18 @@
 package com.hyd.pass.model;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author yiding.he
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class Entry extends OrderedItem {
 
     private String location;
@@ -14,10 +21,9 @@ public class Entry extends OrderedItem {
 
     private String note;
 
-    private List<Authentication> authentications = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
-    public Entry() {
-    }
+    private List<Authentication> authentications = new ArrayList<>();
 
     public Entry(String name, String location, String comment) {
         this.setName(name);
@@ -25,35 +31,4 @@ public class Entry extends OrderedItem {
         this.comment = comment;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public List<Authentication> getAuthentications() {
-        return authentications;
-    }
-
-    public void setAuthentications(List<Authentication> authentications) {
-        this.authentications = authentications;
-    }
 }

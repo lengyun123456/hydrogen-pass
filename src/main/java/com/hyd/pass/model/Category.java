@@ -1,9 +1,6 @@
 package com.hyd.pass.model;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.hyd.pass.App;
-import com.hyd.pass.utils.AESUtils;
 import javafx.scene.control.TreeItem;
 
 import java.util.ArrayList;
@@ -96,32 +93,6 @@ public class Category extends OrderedItem {
 
     public void removeEntry(Entry entry) {
         this.entries.remove(entry);
-    }
-
-    public void readEntries() {
-        if (this.entryStrings == null) {
-            return;
-        }
-
-        this.entries.clear();
-        this.entryStrings.forEach(entryString -> {
-            String json = AESUtils.decode128(entryString, App.getMasterPassword());
-            Entry entry = JSON.parseObject(json, Entry.class);
-            this.entries.add(entry);
-        });
-    }
-
-    public void saveEntries() {
-        if (this.entries == null) {
-            return;
-        }
-
-        this.entryStrings.clear();
-        this.entries.forEach(entry -> {
-            String json = JSON.toJSONString(entry);
-            String enc = AESUtils.encode128(json, App.getMasterPassword());
-            this.entryStrings.add(enc);
-        });
     }
 
     public void iterateChildren(Consumer<Category> consumer) {

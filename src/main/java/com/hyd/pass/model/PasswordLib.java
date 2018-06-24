@@ -3,6 +3,7 @@ package com.hyd.pass.model;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hyd.pass.App;
+import com.hyd.pass.utils.AESUtils;
 import com.hyd.pass.utils.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -10,8 +11,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -37,6 +41,14 @@ public class PasswordLib {
     private String masterPasswordValidator;
 
     private Category rootCategory;
+
+    private List<Tag> tags = new ArrayList<>();
+
+    private List<String> tagStrings = new ArrayList<>();
+
+    private List<Entry> entries = new ArrayList<>();
+
+    private List<String> entryStrings = new ArrayList<>();
 
     private boolean changed;
 
@@ -75,14 +87,33 @@ public class PasswordLib {
             this.rootCategory = jsonObject.getObject("rootCategory", Category.class);
             this.masterPasswordValidator = masterPasswordValidator;
 
+            if (jsonObject.containsKey("entries")) {
+                this.entryStrings = jsonObject.getJSONArray("entries").toJavaList(String.class);
+            } else {
+                this.rootCategory.iterateChildren(category -> {
+                    this.entryStrings.addAll(category.getEntryStrings());
+                });
+            }
+
+            if (jsonObject.containsKey("tags")) {
+                this.tagStrings = jsonObject.getJSONArray("tags").toJavaList(String.class);
+            }
+
             App.setMasterPassword(masterPassword);
 
             try {
                 if (this.rootCategory == null) {
                     this.rootCategory = new Category("我的密码库");
                 } else {
-                    this.rootCategory.iterateChildren(Category::readEntries);  // 解密内容
+                    this.rootCategory.iterateChildren(category -> {
+                        category.setEntries(category.getEntryStrings()
+                                .stream()
+                                .map(this::decryptEntry).collect(Collectors.toList()));
+                    });  // 解密内容
                 }
+
+                this.entries = this.entryStrings.stream().map(this::decryptEntry).collect(Collectors.toList());
+                this.tags = this.tagStrings.stream().map(this::decryptTag).collect(Collectors.toList());
             } catch (Exception e) {
                 throw new PasswordLibException(e);
             }
@@ -122,20 +153,70 @@ public class PasswordLib {
         this.masterPasswordValidator = masterPasswordValidator;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<Entry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<Entry> entries) {
+        this.entries = entries;
+    }
+
+    /////////////////////////////////////////////// 加密解密
+
+    private String encryptEntry(Entry entry) {
+        String json = JSON.toJSONString(entry);
+        return AESUtils.encode128(json, App.getMasterPassword());
+    }
+
+    private String encryptTag(Tag tag) {
+        String json = JSON.toJSONString(tag);
+        return AESUtils.encode128(json, App.getMasterPassword());
+    }
+
+    private Entry decryptEntry(String entryString) {
+        String json = AESUtils.decode128(entryString, App.getMasterPassword());
+        return JSON.parseObject(json, Entry.class);
+    }
+
+    private Tag decryptTag(String tagString) {
+        String json = AESUtils.decode128(tagString, App.getMasterPassword());
+        return JSON.parseObject(json, Tag.class);
+    }
+
+    ///////////////////////////////////////////////
+
     public void save() {
 
         // 保证校验字符串与最新的主密码一致
         masterPasswordValidator = generateValidator(App.getMasterPassword(), rootCategory.getId());
 
         // 加密所有 entry
-        rootCategory.iterateChildren(Category::saveEntries);
+        rootCategory.iterateChildren(category -> {
+            category.setEntryStrings(
+                    category.getEntries().stream()
+                            .map(this::encryptEntry)
+                            .collect(Collectors.toList()));
+        });
+
+        this.entryStrings = this.entries.stream().map(this::encryptEntry).collect(Collectors.toList());
+        this.tagStrings = this.tags.stream().map(this::encryptTag).collect(Collectors.toList());
 
         Map<String, Object> data = new HashMap<>();
         data.put("masterPasswordValidator", masterPasswordValidator);
         data.put("rootCategory", rootCategory);
+        data.put("entries", entryStrings);
+        data.put("tags", tagStrings);
 
         try {
-            try(ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(saveFile))) {
+            try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(saveFile))) {
                 saveContent(data, zos);
             }
             setChanged(false);
