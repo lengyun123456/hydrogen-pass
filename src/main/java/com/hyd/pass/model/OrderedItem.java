@@ -1,5 +1,10 @@
 package com.hyd.pass.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * (description)
  * created at 2018/2/6
@@ -10,9 +15,9 @@ public abstract class OrderedItem {
 
     private long id = System.currentTimeMillis();
 
-    private String name;
+    private StringProperty name = new SimpleStringProperty();
 
-    private int order;
+    private IntegerProperty order = new SimpleIntegerProperty();
 
     public long getId() {
         return id;
@@ -23,18 +28,26 @@ public abstract class OrderedItem {
     }
 
     public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public int getOrder() {
+        return order.get();
+    }
+
+    public IntegerProperty orderProperty() {
         return order;
     }
 
     public void setOrder(int order) {
-        this.order = order;
+        this.order.set(order);
     }
 }

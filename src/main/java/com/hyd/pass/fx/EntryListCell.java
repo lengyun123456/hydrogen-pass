@@ -11,13 +11,36 @@ import javafx.scene.layout.VBox;
  */
 public class EntryListCell extends ListCell<Entry> {
 
+    private VBox root;
+
+    public EntryListCell() {
+        selectedProperty().addListener((_ob, _old, _new) -> {
+            if (root != null) {
+                if (_new) {
+                    root.getStyleClass().add("selected");
+                } else {
+                    root.getStyleClass().remove("selected");
+                }
+            }
+        });
+    }
+
     @Override
     protected void updateItem(Entry item, boolean empty) {
         super.updateItem(item, empty);
         if (empty) {
+            this.root = null;
             setGraphic(null);
         } else {
+            this.root = new VBox();
             setGraphic(createGraphic(item));
+            item.highlightedProperty().addListener((_ob, _old, _new) -> {
+                if (_new) {
+                    this.root.getStyleClass().add("highlighted");
+                } else {
+                    this.root.getStyleClass().remove("highlighted");
+                }
+            });
         }
     }
 
@@ -30,8 +53,8 @@ public class EntryListCell extends ListCell<Entry> {
         location.getStyleClass().add("entry-location");
         location.setText(item.getLocation());
 
-        VBox vBox = new VBox(title, location);
-        vBox.getStyleClass().add("entry-card");
-        return vBox;
+        root.getChildren().setAll(title, location);
+        root.getStyleClass().add("entry-card");
+        return root;
     }
 }

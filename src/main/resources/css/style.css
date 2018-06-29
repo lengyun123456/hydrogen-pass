@@ -23,6 +23,7 @@
     -fx-border-radius: 0;
     -fx-background-radius: 0;
     -fx-text-fill: #FFF;
+    -fx-cursor: hand;
 }
 
 .button.small {
@@ -85,11 +86,30 @@
 }
 
 .entry-card {
-    -fx-background-color: #cca341;
+    -fx-background-color: #ffdf98;
     -fx-padding: 5;
     -fx-background-radius: 3;
+    -fx-spacing: 3;
+    -fx-border-color: transparent;
+    -fx-border-radius: 4;
+    -fx-border-width: 3;
+}
+
+.entry-card.selected {
+    -fx-border-color: #ff9c4c;
 }
 
 .entry-card .entry-name {
     -fx-font-weight: bold;
+    -fx-text-fill: #666666;
+    -fx-max-width: 200;
+}
+
+.entry-card .entry-location {
+    -fx-text-fill: #666666;
+    -fx-max-width: 200;
+}
+
+.entry-card.highlighted {
+    -fx-background-color: #ffffff;
 }

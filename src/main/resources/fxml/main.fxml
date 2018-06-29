@@ -8,7 +8,7 @@
             stylesheets="@/css/style.css"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.hyd.pass.controllers.MainController"
-            prefHeight="650.0" prefWidth="850.0">
+            prefHeight="650.0" prefWidth="1000.0">
 
     <top>
         <MenuBar>
@@ -32,17 +32,21 @@
 
     <center>
         <HBox>
-            <VBox prefWidth="150" style="-fx-background-color: #1d5fb5;-fx-padding: 0.6em" spacing="10">
-                <TextField promptText="标签" fx:id="txtTagName" style="-fx-border-width: 0"/>
+            <VBox prefWidth="150" style="-fx-background-color: #1d5fb5" spacing="10">
+                <padding>
+                    <Insets topRightBottomLeft="5"/>
+                </padding>
+                <TextField promptText="标签" fx:id="txtTagSearch" style="-fx-border-width: 0"/>
                 <ScrollPane VBox.vgrow="ALWAYS" styleClass="tag-scroll-pane">
                     <VBox fx:id="tagsPane" spacing="10"/>
                 </ScrollPane>
             </VBox>
-            <VBox prefWidth="150" style="-fx-background-color: #d7ba2a" spacing="10">
+            <VBox prefWidth="250" style="-fx-background-color: #ffd900" spacing="10">
                 <padding>
-                    <Insets topRightBottomLeft="5"/>
+                    <Insets top="4" left="5" right="5" bottom="5"/>
                 </padding>
-                <Button text="添加"/>
+                <TextField promptText="关键字" fx:id="txtEntrySearch" style="-fx-border-width: 0;-fx-padding: 4.5"/>
+                <Button style="-fx-background-color: #ffb300;-fx-text-fill: #4c3f00" text="添加" onAction="#newEntryClicked"/>
                 <EntryListView fx:id="lvEntries" VBox.vgrow="ALWAYS" styleClass="entry-list-view"/>
             </VBox>
             <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #97ceff">

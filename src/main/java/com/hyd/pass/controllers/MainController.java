@@ -40,7 +40,9 @@ public class MainController extends BaseController {
 
     public VBox tagsPane = new VBox();
 
-    public TextField txtTagName;
+    public TextField txtTagSearch;
+
+    public TextField txtEntrySearch;
 
     public EntryListView lvEntries;
 
@@ -53,17 +55,20 @@ public class MainController extends BaseController {
         mnuAutoOpen.setSelected(UserConfig.getBoolean("auto_open_on_start", false));
         mnuNoteWrap.setSelected(UserConfig.getBoolean("note_wrap_text", false));
 
-        txtTagName.setOnKeyPressed(event -> {
+        txtTagSearch.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                String tagName = txtTagName.getText();
+                String tagName = txtTagSearch.getText();
                 if (tagName.trim().length() > 0) {
                     Label label = new Label(tagName);
                     label.getStyleClass().add("tag");
                     tagsPane.getChildren().add(label);
-                    txtTagName.selectAll();
+                    txtTagSearch.selectAll();
                 }
             }
         });
+
+        txtEntrySearch.textProperty().addListener((_ob, _old, _new) ->
+                lvEntries.getItems().forEach(entry -> entry.highlightIfMatch(_new)));
 
         ///////////////////////////////////////////////
 
