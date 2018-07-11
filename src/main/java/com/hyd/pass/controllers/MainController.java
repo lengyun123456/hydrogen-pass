@@ -259,6 +259,7 @@ public class MainController extends BaseController {
     }
 
     private void refreshEntryList() {
+        lvEntries.getItems().setAll(App.getPasswordLib().getEntries());
     }
 
     private void refreshAuthenticationList() {
@@ -278,8 +279,9 @@ public class MainController extends BaseController {
 
         if (buttonType == ButtonType.OK) {
             Entry entry = dialog.getEntry();
-            refreshEntryList();
+            App.getPasswordLib().getEntries().add(entry);
             App.setPasswordLibChanged();
+            refreshEntryList();
         }
     }
 

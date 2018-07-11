@@ -50,7 +50,16 @@
                 <EntryListView fx:id="lvEntries" VBox.vgrow="ALWAYS" styleClass="entry-list-view"/>
             </VBox>
             <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #97ceff">
-                <Label text="账户信息和笔记"/>
+                <SplitPane orientation="VERTICAL" VBox.vgrow="ALWAYS">
+                    <ScrollPane>
+                        <FlowPane fx:id="fpAuthentications"/>
+                    </ScrollPane>
+                    <TabPane fx:id="tpNotes">
+                        <Tab closable="false" text="未命名">
+                            <TextArea/>
+                        </Tab>
+                    </TabPane>
+                </SplitPane>
             </VBox>
         </HBox>
     </center>
